@@ -1,0 +1,130 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+
+//@version=5
+indicator(title="Deep Past State", shorttitle="Deep Past State", overlay=true)
+
+
+printLabel(arr, pos, val) =>
+    bool grn=arr.get(0) <= arr.get(1)
+    if (grn)
+        label.new(bar_index + pos, high+22, str.tostring(val), color = color.green)
+    else
+        label.new(bar_index + pos, high+22, str.tostring(val), color = color.red)
+    grn
+
+
+getArray(op, cl) =>
+    var arr = array.new<float>(2)
+    arr.set(0, op.get(op.size()-1))
+    arr.set(1, cl.get(cl.size()-1))
+    arr
+
+IsHourOrHigherTF() =>
+	timeframe.in_seconds() < timeframe.in_seconds("60")
+
+Is2HourOrHigherTF() =>
+	timeframe.in_seconds() < timeframe.in_seconds("120")
+
+Is3HourOrHigherTF() =>
+	timeframe.in_seconds() < timeframe.in_seconds("180")
+
+Is4HourOrHigherTF() =>
+	timeframe.in_seconds() < timeframe.in_seconds("240")
+
+if (IsHourOrHigherTF())
+    runtime.error("err")
+
+// If the current chart timeframe is set to 240 minutes, then the `arrHigh` array will contain four 'high' values from the 60 minute timeframe for each bar.
+op1hr  = request.security_lower_tf(syminfo.tickerid, "60", open)
+cl1hr  = request.security_lower_tf(syminfo.tickerid, "60", close)
+
+op45  = request.security_lower_tf(syminfo.tickerid, "45", open)
+cl45  = request.security_lower_tf(syminfo.tickerid, "45", close)
+
+op30  = request.security_lower_tf(syminfo.tickerid, "30", open)
+cl30  = request.security_lower_tf(syminfo.tickerid, "30", close)
+
+op15  = request.security_lower_tf(syminfo.tickerid, "15", open)
+cl15  = request.security_lower_tf(syminfo.tickerid, "15", close)
+
+op10  = request.security_lower_tf(syminfo.tickerid, "10", open)
+cl10  = request.security_lower_tf(syminfo.tickerid, "10", close)
+
+op7  = request.security_lower_tf(syminfo.tickerid, "7", open)
+cl7  = request.security_lower_tf(syminfo.tickerid, "7", close)
+
+op5  = request.security_lower_tf(syminfo.tickerid, "5", open)
+cl5  = request.security_lower_tf(syminfo.tickerid, "5", close)
+
+op3  = request.security_lower_tf(syminfo.tickerid, "3", open)
+cl3  = request.security_lower_tf(syminfo.tickerid, "3", close)
+
+op2  = request.security_lower_tf(syminfo.tickerid, "2", open)
+cl2  = request.security_lower_tf(syminfo.tickerid, "2", close)
+
+op1  = request.security_lower_tf(syminfo.tickerid, "1", open)
+cl1  = request.security_lower_tf(syminfo.tickerid, "1", close)
+
+if bar_index == last_bar_index
+
+    var arr60 = array.new<float>(2)
+    arr60.set(0, op1hr.get(op1hr.size()-1))
+    arr60.set(1, cl1hr.get(cl1hr.size()-1))
+    //label.new(bar_index - 60, high, str.tostring(arr60, "#.##"))
+    bool grn60 = printLabel(arr60, -25, 60)
+
+    var arr45 = array.new<float>(2)
+    arr45.set(0, op45.get(op45.size()-1))
+    arr45.set(1, cl45.get(cl45.size()-1))
+    //label.new(bar_index - 45, high, str.tostring(arr45, "#.##"))
+    bool grn45 = printLabel(arr45, -20, 45)
+
+    var arr30 = array.new<float>(2)
+    arr30.set(0, op30.get(op30.size()-1))
+    arr30.set(1, cl30.get(cl30.size()-1))
+    //label.new(bar_index - 30, high, str.tostring(arr30, "#.##"))
+    bool grn30 = printLabel(arr30, -15, 30)
+
+    var arr15 = array.new<float>(2)
+    arr15.set(0, op15.get(op15.size()-1))
+    arr15.set(1, cl15.get(cl15.size()-1))
+    //label.new(bar_index - 15, high, str.tostring(arr15, "#.##"))
+    bool grn15 = printLabel(arr15, -10, 15)
+
+    var arr10 = array.new<float>(2)
+    arr10.set(0, op10.get(op10.size()-1))
+    arr10.set(1, cl10.get(cl10.size()-1))
+    //label.new(bar_index - 0, high, str.tostring(arr10, "#.##"))
+    bool grn10 = printLabel(arr10, -5, 10)
+
+    var arr7 = getArray(op7, cl7)
+    //label.new(bar_index + 60, high, str.tostring(arr7, "#.##"))
+    bool grn7 = printLabel(arr7, 0, 7)
+
+    var arr5 = array.new<float>(2)
+    arr5.set(0, op5.get(op5.size()-1))
+    arr5.set(1, cl5.get(cl5.size()-1))
+    //label.new(bar_index + 15, high, str.tostring(arr5, "#.##"))
+    bool grn5 = printLabel(arr5, 5, 5)
+
+    var arr3 = array.new<float>(2)
+    arr3.set(0, op3.get(op3.size()-1))
+    arr3.set(1, cl3.get(cl3.size()-1))
+    //label.new(bar_index + 30, high, str.tostring(arr3, "#.##"))
+    bool grn3 = printLabel(arr3, 10, 3)
+
+    var arr2 = getArray(op2, cl2)
+    //label.new(bar_index + 60, high, str.tostring(arr2, "#.##"))
+    bool grn2 = printLabel(arr2, 15, 2)
+
+    var arr1 = getArray(op1, cl1)
+    //label.new(bar_index + 60, high, str.tostring(arr1, "#.##"))
+    bool grn1 = printLabel(arr1, 20, 1)
+
+    bool buyFlag = grn2 and grn3 and grn5 and grn7 and grn10 and grn15
+    bool sellFlag = (not grn2) and (not grn3) and (not grn5) and (not grn7) and (not grn10) and (not grn15)
+    if buyFlag
+        label.new(bar_index, low - 22, "Buy", color = color.green, style = label.style_label_up)
+    else if sellFlag
+        label.new(bar_index, low - 22, "Sell", color = color.red, style = label.style_label_up)
+

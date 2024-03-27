@@ -1,0 +1,40 @@
+//@version=5
+indicator(title="DeepD Williams Alligator", shorttitle="DeepD Alligator", overlay=true)
+smma(src, length) =>
+	smma =  0.0
+	smma := na(smma[1]) ? ta.sma(src, length) : (smma[1] * (length - 1) + src) / length
+	smma
+jawLength = input.int(13, minval=1, title="Jaw Length")
+teethLength = input.int(8, minval=1, title="Teeth Length")
+lipsLength = input.int(5, minval=1, title="Lips Length")
+jawOffset = input(8, title="Jaw Offset")
+teethOffset = input(5, title="Teeth Offset")
+lipsOffset = input(3, title="Lips Offset")
+jaw = smma(hl2, jawLength)
+teeth = smma(hl2, teethLength)
+lips = smma(hl2, lipsLength)
+jawColor = jaw >= jaw[1] ? #2962FF : color.red
+teethColor = teeth >= teeth[1] ? #ecf01d : color.red
+lipsColor = lips >= lips[1] ? #66BB6A : color.red
+plot(jaw, "Jaw", offset = jawOffset, color= jawColor, linewidth = 2)
+plot(teeth, "Teeth", offset = teethOffset, color=teethColor, linewidth = 2)
+plot(lips, "Lips", offset = lipsOffset, color=lipsColor, linewidth = 2)
+
+isSell = ta.crossunder(lips, teeth)
+// if isSell
+// 	label crossLabelS = label.new(bar_index, high + (high*0.001), "sell D", color = color.red, style = label.style_label_down )
+
+isBuy = ta.crossover(lips, teeth)
+//isBuy = ta.cross(teeth, jaw)
+//bgcolor(isBuy ? color.green : na)
+// if isBuy
+// 	label crossLabelB = label.new(bar_index, low - (low*0.001), "buy D", color = color.green, style = label.style_label_up )
+
+val=11
+strongColor1 = teeth - jaw > val ? color.green : teeth - jaw < (-1*val) ? color.red : color.blue
+plotchar(teeth - jaw, title="JawTeeth", char="", location=location.top, color = strongColor1)
+
+strongColor2 = lips - teeth > val ? color.green : lips - teeth < (-1*val) ? color.red : color.blue
+plotchar(lips - teeth, title="LipsTeeth", char="", location=location.top, color = strongColor2)
+
+
